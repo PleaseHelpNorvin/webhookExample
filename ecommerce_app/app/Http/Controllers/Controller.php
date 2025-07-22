@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use app\Statics\HttpStatus;
-use app\Statics\HttpMessages;
+use App\Statics\HttpStatus;
+use App\Statics\HttpMessages;
 
 abstract class Controller
 {
     //
     protected function respondWithSuccess($data = [], int $code = HttpStatus::OK)
+    {
+        return response()->json([
+            'status' => $code,
+            'message' => HttpMessages::get($code),
+            'data' => $data,
+        ], $code);
+    }
+    protected function respondWithUnprocessable($data = [], int $code = HttpStatus::UNPROCESSABLE_ENTITY)
     {
         return response()->json([
             'status' => $code,

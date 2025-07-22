@@ -3,56 +3,56 @@
 namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Repositories\Auth\RegisterRepository;
+use App\Repositories\Auth\LoginRepository;
+use Illuminate\Auth\AuthenticationException;
 
 class AuthController extends Controller
 {
-    //
+    protected $registerRepo;
+    protected $loginRepo;
 
-    public function register(Request $request)
+    public function __construct(RegisterRepository $registerRepo, LoginRepository $loginRepo)
     {
-        $fields = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|unique:users,email',
-            'password' => 'required|string|confirmed|min:6',
-        ]);
+        $this->registerRepo = $registerRepo;        
+        $this->loginRepo = $loginRepo;
+    }   
 
-        $user = User::create([
-            'name'     => $fields['name'],
-            'email'    => $fields['email'],
-            'password' => bcrypt($fields['password']),
-        ]);
+    public function register(RegisterRequest $request)
+    {
+        $fields = $request->validated();
 
+        $user = $this->registerRepo->register($fields);
+    
         $token = $user->createToken('usertoken')->plainTextToken;
 
         return $this->respondWithCreated([
             'user'  => $user,
             'token' => $token,
+            'message' => 'User registered successfully!',
         ]);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request, )
     {
-        $fields = $request->validate([
-            'email'    => 'required|string|email',
-            'password' => 'required|string'
-        ]);
+        try {
+            $fields = $request->validated();
 
-        $user = User::where('email', $fields['email'])->first();
+            $user = $this->loginRepo->attempt($fields);
 
-        if (!$user || !Hash::check($fields['password'], $user->password)) {
-            return $this->respondWithUnauthorized(['message' => 'Invalid credentials']);
+            $token = $user->createToken('usertoken')->plainTextToken;
+
+            return $this->respondWithSuccess([
+                'user'  => $user,
+                'token' => $token
+            ]);
+
+        } catch (AuthenticationException $e) {
+            return $this->respondWithUnauthorized(['message' => $e->getMessage()]);
         }
-
-        $token = $user->createToken('usertoken')->plainTextToken;
-
-        return $this->respondWithSuccess([
-            'user'  => $user,
-            'token' => $token
-        ]);
     }
 
     public function logout(Request $request)

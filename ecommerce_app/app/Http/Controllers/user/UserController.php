@@ -15,8 +15,8 @@ class UserController extends Controller
         $this->userRepo = $userRepo;
     }
 
-    public function create(Request $request) {
-        $data = $request->only(['name', 'email', 'password']);
+    public function create($userRepo) {
+        $data = $userRepo->only(['name', 'email', 'password']);
         $user = $this->userRepo->create($data);
         return $this->respondWithCreated(['message' => 'User created']);
     }
