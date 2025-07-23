@@ -13,11 +13,23 @@ class Product extends Model
         'stock',
     ];
     
-    protected function cast(): array
+    protected $casts = [
+        'price' => 'decimal:2',
+        'stock' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+    
+    protected function serializeDate(\DateTimeInterface $date)
     {
-        return [
-            'price' => 'decimal:8,2',
-            'stock' => 'integer',
-        ];
+        return $date->format('Y-m-d H:i:s');
     }
+
+    //rs
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    
 }

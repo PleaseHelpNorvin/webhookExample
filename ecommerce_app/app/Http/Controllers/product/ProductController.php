@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\product;
 
-use App\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Repositories\Product\ProductRepository;
 use App\Http\Requests\Product\ProductCreateRequest;
@@ -25,8 +24,7 @@ class ProductController extends Controller
 
         return $this->respondWithCreated([
             'product' => $product,
-            'message' => 'Product created successfully!',
-        ]);
+        ],'Product created successfully!');
     }
 
     public function index() {
@@ -34,9 +32,7 @@ class ProductController extends Controller
 
         return $this->respondWithSuccess([
             'products' => $products,
-            'message' => 'Product fetched successfully!',
-
-        ]);
+        ],'Product fetched successfully!');
     }
 
     public function show($id) {
@@ -45,14 +41,12 @@ class ProductController extends Controller
         if (!$product) {
             return $this->respondWithNotFound([
                 'product' => $product,
-                'message' => 'Product not found',
-            ]);
+            ],'Product not found');
         }
 
         return $this->respondWithSuccess([
             'product' => $product,
-            'message' => 'Product found',
-        ]);
+        ],'Product found');
     }
     
     public function update($id, ProductUpdateRequest $request) { 
@@ -64,14 +58,12 @@ class ProductController extends Controller
         if (!$product) {
             return $this->respondWithNotFound([
                 'product' => $product,
-                'message' => 'Product not found',
-            ]);
+            ], 'Product not found');
         }
         
         return $this->respondWithSuccess([
             'product' => $product,
-            'message' => 'Product updated successfully!',
-        ]);
+        ],'Product updated successfully!');
 
     }
     public function destroy($id) {
@@ -80,14 +72,12 @@ class ProductController extends Controller
         if(!$product) {
             return $this->respondWithNotFound([
                 'product' => $product,
-                'message' => 'Product not found',
-            ]); 
+            ],'Product not found'); 
         }
 
         return $this->respondWithSuccess([
             'product' => $product,
-            'message' => 'Product deleted successfully!',
-        ]);
+        ],'Product deleted successfully!');
     }
 
 }

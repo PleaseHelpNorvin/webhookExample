@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\order\OrderController;
 use App\Http\Controllers\product\ProductController;
 use App\Http\Controllers\User\UserController;
 
@@ -20,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
             
         Route::apiResource('users', UserController::class);
         Route::apiResource('products', ProductController::class);
+        Route::apiResource('orders', OrderController::class);
     });
 
    

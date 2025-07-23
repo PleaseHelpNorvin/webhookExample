@@ -18,29 +18,37 @@ class UserController extends Controller
     public function create($userRepo) {
         $data = $userRepo->only(['name', 'email', 'password']);
         $user = $this->userRepo->create($data);
-        return $this->respondWithCreated(['message' => 'User created']);
+        return $this->respondWithCreated([
+            'user' => $user,
+        ], 'User created');
     }
     
-    public function read(Request $request) {
+    public function read() {
         $users = $this->userRepo->all();
-        return $this->respondWithSuccess(['message' => 'User data']);
+        return $this->respondWithSuccess([
+            'users' => $users, 
+        ], "User data");
     }
 
     public function update(Request $request) {
         $id = $request->id;
-        $update = $this->userRepo->update($id, $request->all());
-        return $this->respondWithSuccess(['message' => 'User updated']);
+        $updated = $this->userRepo->update($id, $request->all());
+        return $this->respondWithSuccess([
+            'user' => $updated,
+        ], "User updated");
     }
 
     public function delete(Request $request) {
         $deleted = $this->userRepo->delete($request->id);
-        return $this->respondWithSuccess(['message' => 'User deleted']);
+        return $this->respondWithSuccess([
+            'user' => $deleted, 
+        ], "User deleted");
     }
 
     public function show(string $id,Request $request) {
         $user = $this->userRepo->find($id);
         return $user 
-            ? $this->respondWithSuccess(['id' => $id, 'message' => 'user info'])
-            : $this->respondWithNotFound(['message' => 'User not found']);
+            ? $this->respondWithSuccess(['id' => $user], 'user info')
+            : $this->respondWithNotFound([],"User not found");
     }
 }
