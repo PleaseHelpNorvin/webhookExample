@@ -24,11 +24,14 @@
         public function update($id, array $data)
         {
             $order = Order::find($id);
-            if($order) {
-                $order->update($data);
-                return $order->load(['user', 'product'])->fresh();
+            
+            if (!$order) {
+                return null;
             }
-            return $order->load(['user', 'product']);
+
+            $order->update($data);
+
+            return $order->load(['user', 'product'])->fresh();
         }
 
         public function delete($id)

@@ -22,9 +22,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('users', UserController::class);
         Route::apiResource('products', ProductController::class);
         Route::apiResource('orders', OrderController::class);
-    });
 
-   
+        // Route::prefix('webhook')->group(function () {
+        //     Route::apiResource('')
+        // });
+    });
+        
 });
+
 
 
